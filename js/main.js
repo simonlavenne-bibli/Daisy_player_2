@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const titre = item.title || "ce livre";
                     if (!confirm(`Voulez-vous vraiment supprimer "${titre}" de vos lectures en cours ?\nCette action est irréversible.`)) return;
                     try {
-                        await library.deleteBook(item.bookId);
+                        await library.removeBook(item.bookId);
                         card.remove();
                         if (container.children.length === 0) section.classList.add('hidden');
                     } catch(e) {
