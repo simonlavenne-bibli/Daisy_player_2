@@ -1,35 +1,242 @@
-Reset et Correction Majeure du Layout (Rendre l'interface cohérente et proportionnelle)
+/* ================================================================
+LUMIÈRE AUDIO — css/style.css
+================================================================
+PRINCIPE : Ce fichier ne touche QU'AUX COULEURS via des variables
+CSS. Aucune propriété de structure (display, position, flex,
+grid, width, height, margin, padding, font-size) n'est modifiée.
+Les classes Tailwind de l'HTML (bg-surface, text-textPrimary,
+border-borderCustom, etc.) sont déjà mappées sur ces variables
+via tailwind.config dans index.html. Il suffit de redéfinir les
+variables par thème pour que tout change.
+================================================================ */
 
-En regardant l'application, les tailles sont totalement disproportionnées : les blocs et les bordures sont devenus géants (notamment la barre de navigation du bas et le bouton de choix de thème), mais les textes et les icônes à l'intérieur sont restés minuscules et mal centrés. De plus, sur smartphone, l'alignement horizontal force un zoom arrière qui rend tout illisible.
+/* ================================================================
+THÈME 1 — BLEU/BLANC/ORANGE (défaut)
+Fond blanc, texte bleu marine, accent orange.
+Ratio WCAG AA : ≥ 4.5:1.
+================================================================ */
+:root,
+body[data-theme="light"] {
+  --bg-primary: #f5f8ff;
+  --bg-secondary: #e8eef9;
+  --surface: #ffffff;
+  --surface-hover: #dce6f7;
+  --text-primary: #0d2a6e;
+  --text-secondary: #3a5299;
+  --accent: #e07b00;
+  --text-on-accent: #ffffff;
+  --border: #e07b00;
+  --focus-ring: #b35f00;
+}
 
-Nous allons nettoyer cela en utilisant correctement Tailwind CSS de manière fluide et responsive. Applique STRICTEMENT ces corrections :
+/* ================================================================
+THÈME 2 — BLANC SUR FOND NOIR
+Texte, icônes et bordures blancs (#ffffff) sur fond noir (#000000).
+Ratio WCAG AAA : 21:1.
+================================================================ */
+body[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --surface: #000000;
+  --surface-hover: #111111;
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --accent: #ffffff;
+  --text-on-accent: #000000;
+  --border: #ffffff;
+  --focus-ring: #ffffff;
+}
 
-1. Nettoyage du <head> (HTML) :
+/* ================================================================
+THÈME 3 — NOIR SUR FOND BLANC
+Texte, icônes et bordures noirs (#000000) sur fond blanc (#ffffff).
+Ratio WCAG AAA : 21:1.
+================================================================ */
+body[data-theme="hc"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #e8e8e8;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --accent: #000000;
+  --text-on-accent: #ffffff;
+  --border: #000000;
+  --focus-ring: #000000;
+}
 
-Remplace la balise viewport actuelle par une version standard et propre pour bloquer les zooms arrière étranges des smartphones :
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+/* ================================================================
+THÈME 4 — ORANGE SUR FOND NOIR
+Texte/icônes/bordures orange (#ff8c00) sur fond noir (#000000).
+Ratio WCAG AAA : ≈ 9.5:1.
+================================================================ */
+body[data-theme="sepia"] {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --surface: #000000;
+  --surface-hover: #0f0800;
+  --text-primary: #ff8c00;
+  --text-secondary: #ff8c00;
+  --accent: #ff8c00;
+  --text-on-accent: #000000;
+  --border: #ff8c00;
+  --focus-ring: #ffaa33;
+}
 
-2. Correction de la barre de navigation du bas (<nav>) :
+/* ================================================================
+THÈME 5 — JAUNE SUR FOND NOIR
+Texte/icônes/bordures jaune (#ffdd00) sur fond noir (#000000).
+Ratio WCAG AAA : ≈ 14.7:1.
+================================================================ */
+body[data-theme="yellow"] {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --surface: #000000;
+  --surface-hover: #0e0d00;
+  --text-primary: #ffdd00;
+  --text-secondary: #ffdd00;
+  --accent: #ffdd00;
+  --text-on-accent: #000000;
+  --border: #ffdd00;
+  --focus-ring: #ffe94d;
+}
 
-Supprime les min-h-[120px] ou md:min-h-[168px] qui écrasent l'écran.
+/* ================================================================
+POLICES : Luciole chargée via @font-face dans index.html.
+On l'applique ici sur html et body en fallback.
+================================================================ */
+html, body {
+  font-family: 'Luciole', 'Arial', sans-serif;
+}
 
-Utilise une hauteur fixe simple et propre : h-24 md:h-28.
+/* ================================================================
+BASE FONT SIZE POUR ACCESSIBILITÉ
+Taille de base agrandie pour malvoyants (16px minimum recommande).
+================================================================ */
+html {
+  font-size: 17px;
+}
 
-Pour les boutons à l'intérieur (#nav-home et #nav-player), assure-toi qu'ils ont bien les classes flex flex-col items-center justify-center h-full.
+/* Desktop : taille standard */
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
 
-Taille du contenu : Augmente la taille des icônes (text-3xl md:text-4xl) et des textes (text-lg md:text-xl font-bold). Tout doit être parfaitement centré verticalement et proportionnel à la boîte.
+/* ================================================================
+SLIDER PLUS GRAND POUR ACCESSIBILITÉ TACTILE
+================================================================ */
+input[type="range"] {
+  height: 24px;
+}
 
-3. Correction des 5 boutons du lecteur (#player-normal-layout) :
+@media (max-width: 767px) {
+  input[type="range"] {
+    height: 32px;
+  }
+}
 
-Sur mobile, 5 boutons alignés horizontalement cassent le responsive. Remplace le conteneur flex par une grille responsive :
-class="grid grid-cols-3 gap-3 md:flex md:justify-center md:items-center md:gap-4 py-2"
+/* ================================================================
+FOCUS CLAVIER — WCAG 2.1 SC 2.4.7
+Contour visible sur tous les éléments interactifs.
+La couleur vient de la variable --focus-ring du thème actif.
+================================================================ */
+.focus-ring:focus,
+.focus-ring:focus-visible {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 3px;
+}
 
-Fais en sorte que le bouton principal Play/Pause prenne plus de place ou s'adapte proprement dans cette grille pour rester l'élément central et facile à cliquer.
+/* Renforcement dans les thèmes fort-contraste */
+body[data-theme="dark"] .focus-ring:focus,
+body[data-theme="dark"] .focus-ring:focus-visible,
+body[data-theme="hc"] .focus-ring:focus,
+body[data-theme="hc"] .focus-ring:focus-visible,
+body[data-theme="sepia"] .focus-ring:focus,
+body[data-theme="sepia"] .focus-ring:focus-visible,
+body[data-theme="yellow"] .focus-ring:focus,
+body[data-theme="yellow"] .focus-ring:focus-visible {
+  outline: 5px solid var(--focus-ring);
+  outline-offset: 4px;
+}
 
-Passe tous les textes de ces boutons en Gras (font-bold ou font-black) et ajuste leur taille pour qu'ils remplissent bien leurs boîtes sans déborder.
+/* ================================================================
+SUPPRESSION DES OMBRES ET DÉGRADÉS dans les thèmes fort-contraste.
+On ne supprime QUE box-shadow, text-shadow et background-image —
+aucune propriété de mise en page.
+================================================================ */
+body[data-theme="dark"] *,
+body[data-theme="hc"] *,
+body[data-theme="sepia"] *,
+body[data-theme="yellow"] * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
 
-4. Bouton de thème (Palette en haut à droite) :
+/* ================================================================
+SCROLLBAR THÉMATISÉE
+Firefox + WebKit — uniquement des couleurs, pas de dimensions.
+================================================================ */
+* {
+  scrollbar-color: var(--border) var(--bg-secondary);
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border: 2px solid var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-secondary);
+}
 
-Remplace ses paddings excessifs. Donne-lui une taille fixe et ronde, par exemple w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full. L'icône à l'intérieur doit occuper la majeure partie de l'espace.
+/* ================================================================
+SÉLECTION DE TEXTE
+================================================================ */
+::selection {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
 
-Donne-moi le code corrigé pour index.html et assure-toi que le fichier css/style.css ne vient pas écraser ces tailles avec des valeurs contradictoires.
+/* ================================================================
+ICÔNES MATERIAL SYMBOLS
+Garantit que les icônes héritent bien de la couleur du texte
+courant dans tous les thèmes, sans surcharger les tailles.
+================================================================ */
+.material-symbols-outlined {
+  color: inherit;
+}
+
+/* ================================================================
+TRANSITIONS DE COULEUR ENTRE THÈMES
+Uniquement sur les propriétés de couleur — jamais sur le layout.
+================================================================ */
+body {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+button,
+a,
+input,
+[role="button"] {
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* ================================================================
+PRÉFÉRENCE prefers-reduced-motion
+================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
